@@ -3,8 +3,7 @@ services:
     image: nginx:latest
     container_name: nginx-server
     ports:
-      - "8777:80"   # HTTP-Anfragen auf Port 8777
-      - "8443:443"  # HTTPS-Anfragen auf Port 8443
+      - "8777:443"
     volumes:
       - ./ftpdata/storage_user/static:/usr/share/nginx/html/static  # Mount des statischen Dateiverzeichnisses
       - ./ftpdata/storage_user/media:/usr/share/nginx/html/media    # Mount des Medien-Dateiverzeichnisses
