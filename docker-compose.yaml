@@ -13,8 +13,6 @@ services:
     environment:
       - LETSENCRYPT_HOST=188.245.34.78  # Deine IP-Adresse oder Domain
       - LETSENCRYPT_EMAIL=henry.manke@developerakademie.com  # Deine E-Mail für Zertifikatserneuerungen
-    depends_on:
-      - letsencrypt
     restart: unless-stopped
     networks:
       - proxy-tier
