@@ -9,7 +9,8 @@ services:
       - ./ftpdata/storage_user/static:/usr/share/nginx/html/static  # Statische Dateien
       - ./ftpdata/storage_user/media:/usr/share/nginx/html/media    # Mediendateien
       - ./nginx.conf:/etc/nginx/nginx.conf  # Deine angepasste Nginx-Konfiguration
-      - /etc/letsencrypt:/etc/letsencrypt  # Let's Encrypt Zertifikate
+      - /etc/nginx/certs:/etc/nginx/certs:ro  # Let's Encrypt Zertifikate
+      - /var/run/docker.sock:/var/run/docker.sock:ro  # Docker-Socket für Let's Encrypt Companion
     environment:
       - LETSENCRYPT_HOST=188.245.34.78  # Deine IP-Adresse oder Domain
       - LETSENCRYPT_EMAIL=henry.manke@developerakademie.com  # Deine E-Mail für Zertifikatserneuerungen
@@ -23,11 +24,12 @@ services:
     container_name: letsencrypt
     environment:
       - DEFAULT_EMAIL=henry.manke@developerakademie.com  # E-Mail für Let's Encrypt Benachrichtigungen
+      - NGINX_PROXY_CONTAINER=nginx-server  # Setze den Proxy-Container, um auf Nginx zugreifen zu können
     volumes:
-      - /etc/nginx/certs
+      - /etc/nginx/certs:/etc/nginx/certs
       - /var/run/docker.sock:/var/run/docker.sock:ro
     depends_on:
-      - nginx
+      - nginx  # Abhängig von nginx, aber nicht umgekehrt
     restart: unless-stopped
 
   # FTP-Server
