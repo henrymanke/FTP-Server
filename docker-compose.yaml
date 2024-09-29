@@ -20,7 +20,8 @@ services:
     environment:
       - FTP_USER=${FTP_USER}
       - FTP_PASS=${FTP_PASS}
+      - FILE_OPEN_MODE=0755
+      - LOCAL_UMASK=022
     volumes:
       - ./ftpdata:/home/vsftpd
-      - ./vsftpd.conf:/etc/vsftpd/vsftpd.conf
     restart: unless-stopped
