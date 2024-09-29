@@ -3,8 +3,8 @@ services:
     image: nginx:latest
     container_name: nginx-server
     ports:
-      - "80:80"    # HTTP für die Zertifikatserstellung und Erneuerung durch Certbot
-      - "443:443"  # HTTPS für sichere Verbindungen
+      - "8777:80"    # HTTP für die Zertifikatserstellung und Erneuerung durch Certbot
+      - "8777:443"  # HTTPS für sichere Verbindungen
     volumes:
       - ./ftpdata/storage_user/static:/usr/share/nginx/html/static  # Statik
       - ./ftpdata/storage_user/media:/usr/share/nginx/html/media    # Medien
