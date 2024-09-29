@@ -21,5 +21,6 @@ services:
       - FTP_USER=${FTP_USER}
       - FTP_PASS=${FTP_PASS}
     volumes:
-      - ./ftpdata:/home/vsftpd  # Lokale Dateien für FTP
+      - ./ftpdata:/home/vsftpd
+      - ./vsftpd.conf:/etc/vsftpd/vsftpd.conf
     restart: unless-stopped
