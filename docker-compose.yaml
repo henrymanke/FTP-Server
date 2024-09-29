@@ -1,0 +1,25 @@
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx-server
+    ports:
+      - "8777:80"
+    volumes:
+      - ./ftpdata/storage_user/static:/usr/share/nginx/html/static  # Mount des statischen Dateiverzeichnisses
+      - ./ftpdata/storage_user/media:/usr/share/nginx/html/media    # Mount des Medien-Dateiverzeichnisses
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    restart: unless-stopped
+
+  vsftpd:
+    image: fauria/vsftpd
+    container_name: vsftpd-server
+    ports:
+      - "20:20"
+      - "21:21"
+      - "21100-21110:21100-21110"
+    environment:
+      - FTP_USER=${FTP_USER}
+      - FTP_PASS=${FTP_PASS}
+    volumes:
+      - ./ftpdata:/home/vsftpd  # Lokale Dateien für FTP
+    restart: unless-stopped
