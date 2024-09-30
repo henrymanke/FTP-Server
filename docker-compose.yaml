@@ -12,8 +12,6 @@ services:
       - ./certs:/etc/letsencrypt                                    # Zertifikate mounten
       - ./certs-data:/var/lib/letsencrypt                           # Certbot-Daten
       - ./log:/var/log/letsencrypt                                  # Certbot-Logs
-    depends_on:
-      - certbot  # Certbot muss zuerst laufen, um das Zertifikat zu erstellen
     restart: unless-stopped
 
   certbot:
@@ -26,6 +24,8 @@ services:
       - ./ftpdata/webroot:/usr/share/nginx/html                     # Webroot für die Zertifikatvalidierung
       - ./log:/var/log/letsencrypt                                  # Certbot-Logs
     entrypoint: /bin/sh -c "trap exit TERM; while :; do sleep 12h & wait $${!}; certbot renew; done"
+    depends_on:
+      - nginx
     restart: unless-stopped
 
   vsftpd:
