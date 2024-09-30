@@ -3,7 +3,7 @@ services:
     image: nginx:latest
     container_name: nginx-server
     ports:
-      - "8843:80"  # HTTPS auf Host-Port 8843
+      - "8777:80"  # HTTPS auf Host-Port 8843
     volumes:
       - ./ftpdata/storage_user/static:/usr/share/nginx/html/static  # Statik
       - ./ftpdata/storage_user/media:/usr/share/nginx/html/media    # Medien
