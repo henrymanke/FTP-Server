@@ -13,11 +13,17 @@ services:
       - ./certs-data:/var/lib/letsencrypt                           # Certbot-Daten
       - ./log:/var/log/letsencrypt                                  # Certbot-Logs
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s       # Intervall zwischen den Checks
+      timeout: 10s        # Timeout für den Check
+      retries: 3          # Wie oft wird versucht, den Container zu prüfen, bevor er als "unhealthy" markiert wird
+      start_period: 30s   # Wartezeit nach dem Start, bevor der erste Check ausgeführt wird
 
   certbot:
     image: certbot/certbot
     container_name: certbot
-    command: certonly --webroot --webroot-path=/usr/share/nginx/html --email manke.henry@gmail.com --agree-tos --no-eff-email --force-renewal -d da-storage.de -d www.da-storage.de
+    command: /bin/sh -c "trap exit TERM; certbot certonly --webroot --webroot-path=/usr/share/nginx/html --email manke.henry@gmail.com --agree-tos --no-eff-email --force-renewal -d da-storage.de -d www.da-storage.de && nginx -s reload; while :; do sleep 12h & wait $${!}; certbot renew; done"
     volumes:
       - ./certs:/etc/letsencrypt                                    # Zertifikate mounten
       - ./certs-data:/var/lib/letsencrypt                           # Certbot-Daten
@@ -27,6 +33,11 @@ services:
     depends_on:
       - nginx
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "test", "-f", "/etc/letsencrypt/live/da-storage.de/fullchain.pem"]
+      interval: 24h       # Überprüfung einmal täglich
+      timeout: 10s
+      retries: 3
 
   vsftpd:
     image: fauria/vsftpd
@@ -43,3 +54,8 @@ services:
     volumes:
       - ./ftpdata:/home/vsftpd
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "21"]   # Prüft, ob der FTP-Port 21 geöffnet ist
+      interval: 30s
+      timeout: 10s
+      retries: 3
